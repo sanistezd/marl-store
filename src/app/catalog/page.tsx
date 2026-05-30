@@ -14,6 +14,7 @@ function FilterDropdown({
   options: string[]; 
   selected: string[]; 
   onChange: (selected: string[]) => void; 
+  alignRight?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [localSelected, setLocalSelected] = useState<string[]>(selected);
@@ -77,11 +78,11 @@ function FilterDropdown({
       </button>
       
       {isOpen && (
-        <div style={{ 
-          position: 'absolute', top: 'calc(100% + 0.75rem)', left: 0, background: '#fff', minWidth: '260px', 
-          borderRadius: '20px', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.15)', padding: '1.25rem', zIndex: 50, border: '1px solid #f0f0f0',
-          animation: 'fadeInUp 0.2s ease-out'
-        }}>
+        <>
+          <div className="mobile-dropdown-backdrop" onClick={() => setIsOpen(false)}></div>
+          <div className="filter-dropdown-menu" style={{ 
+            ...(alignRight ? { right: 0 } : { left: 0 }),
+          }}>
           {options.map(opt => (
             <label 
               key={opt} 
@@ -100,7 +101,8 @@ function FilterDropdown({
             <button onClick={reset} style={{ background: 'none', border: 'none', color: '#888', fontWeight: 600, cursor: 'pointer' }}>Сбросить</button>
             <button onClick={apply} style={{ background: '#111', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}>Применить</button>
           </div>
-        </div>
+          </div>
+        </>
       )}
     </div>
   );
@@ -201,8 +203,8 @@ export default function CatalogPage() {
             <div className="filters-group">
               <FilterDropdown label="Категория" options={['Напитки', 'Снеки', 'Сладости', 'Соусы']} selected={categories} onChange={setCategories} />
               <FilterDropdown label="Страна" options={['Россия', 'США', 'Южная Корея', 'Европа']} selected={countries} onChange={setCountries} />
-              <FilterDropdown label="Бренд" options={['ZAVOD', 'EON', 'CHIKALAB', 'Dr Pepper', 'Samyang', 'Milka']} selected={brands} onChange={setBrands} />
-              <FilterDropdown label="Цена" options={['До 500 ₽', '500 - 1000 ₽', 'От 1000 ₽']} selected={prices} onChange={setPrices} />
+              <FilterDropdown label="Бренд" options={['ZAVOD', 'EON', 'CHIKALAB', 'Dr Pepper', 'Samyang', 'Milka']} selected={brands} onChange={setBrands} alignRight={true} />
+              <FilterDropdown label="Цена" options={['До 500 ₽', '500 - 1000 ₽', 'От 1000 ₽']} selected={prices} onChange={setPrices} alignRight={true} />
             </div>
             
             <div className="sort-group">
@@ -280,6 +282,23 @@ export default function CatalogPage() {
         .sort-group { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
         .sort-label { color: #888; font-weight: 600; white-space: nowrap; }
         .sort-select { padding: 0.8rem 1.5rem; border-radius: 30px; border: none; background: #f2f3f7; font-weight: 600; font-size: 0.95rem; outline: none; cursor: pointer; }
+        
+        .filter-dropdown-menu {
+          position: absolute;
+          top: calc(100% + 0.75rem);
+          background: #fff;
+          min-width: 260px;
+          border-radius: 20px;
+          box-shadow: 0 20px 50px -10px rgba(0,0,0,0.15);
+          padding: 1.25rem;
+          z-index: 50;
+          border: 1px solid #f0f0f0;
+          animation: fadeInUp 0.2s ease-out;
+        }
+
+        .mobile-dropdown-backdrop {
+          display: none;
+        }
 
         @media (max-width: 768px) {
           .catalog-header-container { padding: 2rem 1.5rem 1.5rem; }
@@ -287,6 +306,33 @@ export default function CatalogPage() {
           .filters-wrapper { flex-direction: column; align-items: stretch; gap: 1.5rem; }
           .filters-group { justify-content: flex-start; }
           .sort-group { justify-content: space-between; width: 100%; border-top: 1px solid #eee; padding-top: 1.5rem; }
+          
+          .mobile-dropdown-backdrop {
+            display: block;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            backdrop-filter: blur(2px);
+          }
+          
+          .filter-dropdown-menu {
+            position: fixed !important;
+            top: auto !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            border-radius: 24px 24px 0 0 !important;
+            z-index: 1000 !important;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            padding-bottom: 3rem !important; /* Extra padding for safe area */
+          }
+          
+          @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+          }
         }
       `}} />
     </div>
