@@ -207,7 +207,7 @@ export default function Home() {
           <div className="category-header-card">
             <div className="section-title-col">
               <h2>Товары<br/>по странам</h2>
-              <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); setActiveCountry(null); }}>Смотреть все &rarr;</a>
+              <Link href="/catalog" className="section-link">Смотреть все &rarr;</Link>
             </div>
           </div>
           
@@ -234,6 +234,15 @@ export default function Home() {
             <div className="cat-info">
               <h3>Корея</h3>
               <p>Корейские<br/>товары</p>
+            </div>
+            <div className="cat-arrow">&rarr;</div>
+          </div>
+
+          <div className="category-card" style={activeCountry === 'eu' ? { background: '#1a1f35', boxShadow: '0 0 0 2px #3b82f6' } : { background: '#1a1f35' }} onClick={() => setActiveCountry(activeCountry === 'eu' ? null : 'eu')}>
+            <img src="/shark_mascot.png" alt="Shark" className="cat-mascot" style={{ filter: 'hue-rotate(180deg)' }} />
+            <div className="cat-info">
+              <h3>Европа</h3>
+              <p>Европейские<br/>товары</p>
             </div>
             <div className="cat-arrow">&rarr;</div>
           </div>

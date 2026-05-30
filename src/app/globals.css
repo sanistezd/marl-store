@@ -246,7 +246,7 @@ body {
 /* Categories Grid */
 .categories-grid {
   display: grid;
-  grid-template-columns: 2fr 3fr 3fr 3fr;
+  grid-template-columns: 1.5fr 2fr 2fr 2fr 2fr;
   gap: 1rem;
   margin-bottom: 4rem;
 }
@@ -637,7 +637,10 @@ body {
 @media (max-width: 768px) {
   .hero-title { font-size: 2.5rem; }
   .main-content { padding: 2rem 1.5rem; }
-  .products-row { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .products-row { grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 4rem; }
+  .categories-grid { margin-bottom: 4rem; }
+  .brands-grid { margin-top: 4rem; margin-bottom: 3rem; }
+  .products-header { margin-top: 3rem; margin-bottom: 2rem; }
   .hero-main-image { height: 250px; max-width: 100%; }
   .prod-img-wrapper { height: 140px; }
 }
