@@ -8,7 +8,9 @@ function FilterDropdown({
   label, 
   options, 
   selected, 
-  onChange 
+  onChange,
+  alignRight
+
 }: { 
   label: string; 
   options: string[]; 
