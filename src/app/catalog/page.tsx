@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
+import { useRouter } from 'next/navigation';
+import { ALL_PRODUCTS } from '@/data/products';
 
 function FilterDropdown({ 
   label, 
@@ -110,20 +112,9 @@ function FilterDropdown({
   );
 }
 
-const DUMMY_PRODUCTS = [
-  { id: '1', name: 'ZAVOD Energy Drink Classic', category: 'Напитки', country: 'Россия', brand: 'ZAVOD', price: 150, image: '/energy_drink.png', realImage: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600&auto=format&fit=crop', description: 'Отечественный энергетический напиток нового поколения. Обладает классическим кисло-сладким вкусом и содержит мощный заряд таурина и кофеина. Идеально подходит для долгих рабочих смен, тренировок или ночных тусовок.', characteristics: ['Классический вкус', 'Сильно бодрящее', 'Российское производство'] },
-  { id: '2', name: 'Dr Pepper Cherry', category: 'Напитки', country: 'США', brand: 'Dr Pepper', price: 250, image: '/dr_pepper_cherry.png', realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop', description: 'Легендарный американский газированный напиток с насыщенным вишневым вкусом. Это уникальный бленд из 23 вкусов, который был дополнен мягкой вишневой нотой, чтобы создать идеальный освежающий микс. Лучше всего пьется сильно охлажденным со льдом.', characteristics: ['Сладкое', 'Вишневое', 'Сильногазированное'] },
-  { id: '3', name: 'CHIKALAB Протеиновый батончик', category: 'Снеки', country: 'Россия', brand: 'CHIKALAB', price: 120, image: '/product_russia_kvas.png', realImage: 'https://images.unsplash.com/photo-1620862024760-b9cc6cb226a2?q=80&w=600&auto=format&fit=crop', description: 'Максимально полезный перекус с высоким содержанием сывороточного белка и без добавления сахара. Внутри скрывается нежная начинка, покрытая качественным шоколадом без сахара. Отличный вариант для закрытия белкового углеводного окна после тренировки.', characteristics: ['Сладкое', 'Сытное', '20г Белка', 'Без сахара'] },
-  { id: '4', name: 'Острый рамен Samyang', category: 'Снеки', country: 'Южная Корея', brand: 'Samyang', price: 650, image: '/samyang_ramen.png', realImage: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=600&auto=format&fit=crop', description: 'Один из самых острых и популярных раменов в мире от корейского бренда Samyang. Отличается невероятно жгучим, но при этом насыщенным куриным вкусом со сладковатыми нотками. В комплекте идет фирменный экстра-острый соус и пакетик с кунжутом и водорослями нори.', characteristics: ['Очень острое (Buldak)', 'Сытное', 'Со вкусом курицы'] },
-  { id: '5', name: 'Milka Oreo', category: 'Сладости', country: 'Европа', brand: 'Milka', price: 350, image: '/milka_oreo.png', realImage: 'https://images.unsplash.com/photo-1620862024760-b9cc6cb226a2?q=80&w=600&auto=format&fit=crop', description: 'Нежный альпийский шоколад с хрустящими кусочками оригинального печенья Oreo.', characteristics: ['Сладкое', 'Хрустящее', 'Молочный шоколад'] },
-  { id: '6', name: 'Samyang Buldak Sauce', category: 'Соусы', country: 'Южная Корея', brand: 'Samyang', price: 1200, image: '/samyang_ramen.png', realImage: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=600&auto=format&fit=crop', description: 'Знаменитый острый соус Samyang для любых блюд. Добавь огня!', characteristics: ['Экстремально острое', 'Жидкое'] },
-  { id: '7', name: 'EON Almond Premium', category: 'Напитки', country: 'США', brand: 'EON', price: 800, image: '/energy_drink.png', realImage: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600&auto=format&fit=crop', description: 'Премиальный энергетический напиток с миндальным вкусом.', characteristics: ['Бодрящее', 'Сладкое', 'Миндаль'] },
-  { id: '8', name: 'ZAVOD Sugar Free', category: 'Напитки', country: 'Россия', brand: 'ZAVOD', price: 150, image: '/dr_pepper_cherry.png', realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop', description: 'Энергетик без сахара. Максимум энергии и ноль калорий.', characteristics: ['Без сахара', 'Бодрящее', 'Легкое'] },
-];
-
-export default function CatalogPage() {
   const { items, addItem } = useCartStore();
   const { toggleFavorite, isFavorite } = useFavoritesStore();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
   // Filters State
@@ -132,16 +123,15 @@ export default function CatalogPage() {
   const [brands, setBrands] = useState<string[]>([]);
   const [prices, setPrices] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState('По популярности');
-  const [selectedProductInfo, setSelectedProductInfo] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   // Filtering Logic
-  const filteredProducts = DUMMY_PRODUCTS.filter((product) => {
+  const filteredProducts = ALL_PRODUCTS.filter((product) => {
     if (categories.length > 0 && !categories.includes(product.category)) return false;
-    if (countries.length > 0 && !countries.includes(product.country)) return false;
+    if (countries.length > 0 && !countries.includes(product.countryName)) return false;
     if (brands.length > 0 && !brands.includes(product.brand)) return false;
     
     if (prices.length > 0) {
@@ -168,21 +158,6 @@ export default function CatalogPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f2f3f7', color: '#111' }}>
-      {selectedProductInfo && (
-        <div className="cart-overlay open" onClick={() => setSelectedProductInfo(null)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
-          <div className="info-modal" onClick={e => e.stopPropagation()}>
-            <button className="close-cart-btn" onClick={() => setSelectedProductInfo(null)} style={{ position: 'absolute', top: '15px', right: '15px', color: '#fff', zIndex: 10 }}>&times;</button>
-            <img src={selectedProductInfo.realImage || selectedProductInfo.image} className="info-modal-img" alt={selectedProductInfo.name} />
-            <h3>{selectedProductInfo.name}</h3>
-            <p style={{ color: '#aaa', marginBottom: '1rem', fontSize: '0.95rem', lineHeight: 1.5 }}>{selectedProductInfo.description}</p>
-            <div style={{ marginBottom: '1.5rem' }}>
-               {selectedProductInfo.characteristics?.map((char: string) => <span key={char} className="char-tag">{char}</span>)}
-            </div>
-            <button className="checkout-btn" onClick={() => { addItem({id: selectedProductInfo.id, name: selectedProductInfo.name, price: selectedProductInfo.price, image: selectedProductInfo.image}); setSelectedProductInfo(null); }}>В корзину за {selectedProductInfo.price} ₽</button>
-          </div>
-        </div>
-      )}
-
       <header className="header" style={{ background: '#0a0a0a' }}>
         <Link href="/" className="logo-area" style={{ textDecoration: 'none', color: '#fff' }}>
           <svg viewBox="0 0 24 24" fill="white" className="logo-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" /></svg>
@@ -249,7 +224,7 @@ export default function CatalogPage() {
             {sortedProducts.map((product) => {
               const favored = mounted && isFavorite(product.id);
               return (
-                <div className="product-item" key={product.id} onClick={() => setSelectedProductInfo(product)} style={{ cursor: 'pointer', background: '#fff', padding: '1.5rem', border: '1px solid #eee', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 40px -10px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
+                <div className="product-item" key={product.id} onClick={() => router.push('/product/' + product.id)} style={{ cursor: 'pointer', background: '#fff', padding: '1.5rem', border: '1px solid #eee', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 40px -10px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
                   <button 
                     className="heart-btn" 
                     onClick={(e) => { e.stopPropagation(); toggleFavorite(product as any); }}
@@ -263,8 +238,8 @@ export default function CatalogPage() {
                     <img src={product.image} className="prod-img" alt={product.name} />
                   </div>
                   <div className="prod-title" style={{ fontSize: '1.1rem', marginTop: '1rem' }}>{product.name}</div>
-                  <div className="prod-cat" style={{ color: '#888' }}>{product.country} • {product.category}</div>
-                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedProductInfo(product); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>Подробнее &#9432;</button>
+                  <div className="prod-cat" style={{ color: '#888' }}>{product.countryName} • {product.category}</div>
+                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push('/product/' + product.id); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>Подробнее &#9432;</button>
                   <div className="prod-footer" style={{ marginTop: 'auto' }}>
                     <span className="prod-price" style={{ fontSize: '1.3rem' }}>{product.price} &#8381;</span>
                     <button 

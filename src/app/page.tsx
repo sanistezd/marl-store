@@ -1,89 +1,16 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useCartStore } from '@/store/useCartStore';
-
-const ALL_PRODUCTS = [
-  {
-    id: '1',
-    title: 'Buldak Spicy Ramen',
-    country: 'kr',
-    countryName: 'Южная Корея',
-    categoryName: 'Снеки',
-    price: 650,
-    image: '/samyang_ramen.png',
-    realImage: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=600&auto=format&fit=crop',
-    description: 'Один из самых острых и популярных раменов в мире от корейского бренда Samyang. Отличается невероятно жгучим, но при этом насыщенным куриным вкусом со сладковатыми нотками. В комплекте идет фирменный экстра-острый соус и пакетик с кунжутом и водорослями нори. Осторожно: вызывает привыкание и слезы счастья у любителей остренького!',
-    characteristics: ['Очень острое (Buldak)', 'Сытное', 'Со вкусом курицы', 'Премиум качество']
-  },
-  {
-    id: '2',
-    title: 'Dr Pepper Cherry',
-    country: 'us',
-    countryName: 'США',
-    categoryName: 'Напитки',
-    price: 250,
-    image: '/dr_pepper_cherry.png',
-    realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop',
-    description: 'Легендарный американский газированный напиток с насыщенным вишневым вкусом. Это уникальный бленд из 23 вкусов, который был дополнен мягкой вишневой нотой, чтобы создать идеальный освежающий микс. Лучше всего пьется сильно охлажденным со льдом.',
-    characteristics: ['Сладкое', 'Вишневое', 'Сильногазированное', 'Легендарный вкус']
-  },
-  {
-    id: '3',
-    title: 'Milka Oreo',
-    country: 'eu',
-    countryName: 'Европа',
-    categoryName: 'Сладости',
-    price: 350,
-    image: '/milka_oreo.png',
-    realImage: 'https://images.unsplash.com/photo-1620862024760-b9cc6cb226a2?q=80&w=600&auto=format&fit=crop',
-    description: 'Нежный альпийский молочный шоколад Milka, тающий во рту, в идеальном сочетании с большими, хрустящими кусочками оригинального американского печенья Oreo и ванильным кремом. Это двойное удовольствие для настоящих сладкоежек.',
-    characteristics: ['Очень сладкое', 'Хрустящее печенье', 'Настоящий молочный шоколад']
-  },
-  {
-    id: '4',
-    title: 'Energy Drink Premium',
-    country: 'ru',
-    countryName: 'Россия',
-    categoryName: 'Энергетики',
-    price: 150,
-    image: '/energy_drink.png',
-    realImage: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600&auto=format&fit=crop',
-    description: 'Заряжающий энергией напиток отечественного производства. Бодрит и освежает.',
-    characteristics: ['Бодрящее', 'Кисло-сладкое', 'Газированное']
-  },
-  {
-    id: '5',
-    title: 'ZAVOD Energy Drink Classic',
-    country: 'ru',
-    countryName: 'Россия',
-    categoryName: 'Напитки',
-    price: 150,
-    image: '/energy_drink.png',
-    realImage: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600&auto=format&fit=crop',
-    description: 'Классический энергетик для тех, кому нужно быстро прийти в тонус.',
-    characteristics: ['Классический вкус', 'Бодрящее']
-  },
-  {
-    id: '6',
-    title: 'ZAVOD Sugar Free',
-    country: 'ru',
-    countryName: 'Россия',
-    categoryName: 'Напитки',
-    price: 150,
-    image: '/dr_pepper_cherry.png',
-    realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop',
-    description: 'Энергетик без сахара. Максимум энергии и ноль калорий.',
-    characteristics: ['Без сахара', 'Бодрящее', 'Легкое']
-  }
-];
+import { ALL_PRODUCTS } from '@/data/products';
 
 export default function Home() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCountry, setActiveCountry] = useState<string | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [selectedProductInfo, setSelectedProductInfo] = useState<any>(null);
   
   const cartStore = useCartStore();
   const { toggleFavorite, isFavorite, items: favoriteItems } = useFavoritesStore();
@@ -119,21 +46,6 @@ export default function Home() {
 
   return (
     <>
-      {selectedProductInfo && (
-        <div className="cart-overlay open" onClick={() => setSelectedProductInfo(null)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
-          <div className="info-modal" onClick={e => e.stopPropagation()}>
-            <button className="close-cart-btn" onClick={() => setSelectedProductInfo(null)} style={{ position: 'absolute', top: '15px', right: '15px', color: '#fff', zIndex: 10 }}>&times;</button>
-            <img src={selectedProductInfo.realImage || selectedProductInfo.image} className="info-modal-img" alt={selectedProductInfo.title} />
-            <h3>{selectedProductInfo.title}</h3>
-            <p style={{ color: '#aaa', marginBottom: '1rem', fontSize: '0.95rem', lineHeight: 1.5 }}>{selectedProductInfo.description}</p>
-            <div style={{ marginBottom: '1.5rem' }}>
-               {selectedProductInfo.characteristics?.map((char: string) => <span key={char} className="char-tag">{char}</span>)}
-            </div>
-            <button className="checkout-btn" onClick={() => { addToCart(selectedProductInfo); setSelectedProductInfo(null); }}>В корзину за {selectedProductInfo.price} ₽</button>
-          </div>
-        </div>
-      )}
-
       <div className={`cart-overlay ${isCartOpen ? 'open' : ''}`} onClick={() => setIsCartOpen(false)}></div>
       <div className={`cart-drawer ${isCartOpen ? 'open' : ''}`}>
         <div className="cart-header">
@@ -295,7 +207,7 @@ export default function Home() {
            {filteredProducts.length > 0 ? filteredProducts.map(product => {
              const favored = isFavorite(product.id);
              return (
-               <div className="product-item" key={product.id} onClick={() => setSelectedProductInfo(product)} style={{ cursor: 'pointer' }}>
+               <div className="product-item" key={product.id} onClick={() => router.push('/product/' + product.id)} style={{ cursor: 'pointer' }}>
                  <button 
                    className="heart-btn" 
                    onClick={(e) => { e.stopPropagation(); toggleFavorite({ id: product.id, name: product.title, price: product.price, image: product.image }) }}
@@ -308,7 +220,7 @@ export default function Home() {
                  </div>
                  <div className="prod-title">{product.title}</div>
                  <div className="prod-cat">{product.countryName}<br/>{product.categoryName}</div>
-                 <button onClick={(e) => { e.stopPropagation(); setSelectedProductInfo(product); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>Подробнее &#9432;</button>
+                 <button onClick={(e) => { e.stopPropagation(); router.push('/product/' + product.id); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>Подробнее &#9432;</button>
                  <div className="prod-footer">
                    <span className="prod-price">{product.price} &#8381;</span>
                    <button className="btn-cart" onClick={(e) => { e.stopPropagation(); addToCart(product); }}>В корзину</button>
