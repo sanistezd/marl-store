@@ -125,14 +125,14 @@ export default function CartPage() {
             <div className="cart-main" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
               {/* Cart Items Section */}
-              <div style={{ background: '#111', padding: '2rem', borderRadius: '20px', border: '1px solid #222' }}>
+              <div className="checkout-section">
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <ShoppingBag size={24} /> Ваши товары
                 </h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   {items.map((item) => (
-                    <div key={item.id + (item.size || '')} style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid #222' }}>
-                      <div style={{ width: '80px', height: '80px', background: '#1a1a1a', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
+                    <div key={item.id + (item.size || '')} className="cart-item-row">
+                      <div className="cart-item-image">
                         {item.image ? (
                           <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
@@ -140,28 +140,30 @@ export default function CartPage() {
                         )}
                       </div>
 
-                      <div style={{ flex: 1 }}>
+                      <div className="cart-item-details">
                         <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.25rem' }}>{item.name}</h3>
                         {item.size && <p style={{ fontSize: '0.9rem', color: '#888' }}>Размер: {item.size}</p>}
                         <p style={{ fontSize: '1.2rem', fontWeight: 800, marginTop: '0.5rem' }}>{item.price} ₽</p>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#1a1a1a', padding: '0.5rem', borderRadius: '8px' }}>
-                        <button type="button" onClick={() => updateQuantity(item.id, item.quantity - 1, item.size)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: '4px' }}><Minus size={16} /></button>
-                        <span style={{ minWidth: '20px', textAlign: 'center', fontWeight: 600 }}>{item.quantity}</span>
-                        <button type="button" onClick={() => updateQuantity(item.id, item.quantity + 1, item.size)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: '4px' }}><Plus size={16} /></button>
-                      </div>
+                      <div className="cart-item-actions">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#1a1a1a', padding: '0.5rem', borderRadius: '8px' }}>
+                          <button type="button" onClick={() => updateQuantity(item.id, item.quantity - 1, item.size)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: '4px' }}><Minus size={16} /></button>
+                          <span style={{ minWidth: '20px', textAlign: 'center', fontWeight: 600 }}>{item.quantity}</span>
+                          <button type="button" onClick={() => updateQuantity(item.id, item.quantity + 1, item.size)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: '4px' }}><Plus size={16} /></button>
+                        </div>
 
-                      <button type="button" onClick={() => removeItem(item.id, item.size)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.5rem', marginLeft: '0.5rem' }}>
-                        <Trash2 size={20} />
-                      </button>
+                        <button type="button" onClick={() => removeItem(item.id, item.size)} className="cart-item-remove">
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Checkout Form Section */}
-              <div style={{ background: '#111', padding: '2rem', borderRadius: '20px', border: '1px solid #222' }}>
+              <div className="checkout-section">
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Данные доставки</h2>
 
                 <div className="form-grid" style={{ marginBottom: '1rem' }}>
@@ -273,6 +275,43 @@ export default function CartPage() {
           grid-template-columns: 1fr 2fr;
           gap: 1rem;
         }
+
+        .cart-item-row {
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+          padding-bottom: 1.5rem;
+          border-bottom: 1px solid #222;
+        }
+        .cart-item-image {
+          width: 80px;
+          height: 80px;
+          background: #1a1a1a;
+          border-radius: 12px;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+        .cart-item-details {
+          flex: 1;
+        }
+        .cart-item-actions {
+          display: flex;
+          align-items: center;
+        }
+        .cart-item-remove {
+          background: none;
+          border: none;
+          color: #ef4444;
+          cursor: pointer;
+          padding: 0.5rem;
+          margin-left: 0.5rem;
+        }
+        .checkout-section {
+          background: #111;
+          padding: 2rem;
+          border-radius: 20px;
+          border: 1px solid #222;
+        }
         
         @media (max-width: 900px) {
           .cart-layout {
@@ -283,6 +322,28 @@ export default function CartPage() {
           }
           .inner-container {
             padding: 1rem !important;
+          }
+        }
+
+        @media (max-width: 500px) {
+          .cart-item-row {
+            flex-wrap: wrap;
+            gap: 1rem;
+          }
+          .cart-item-image {
+            width: 60px;
+            height: 60px;
+          }
+          .cart-item-details {
+            min-width: 200px;
+          }
+          .cart-item-actions {
+            width: 100%;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+          }
+          .checkout-section {
+            padding: 1.25rem;
           }
         }
       `}} />
