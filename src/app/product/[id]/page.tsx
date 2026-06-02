@@ -1,17 +1,18 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { ALL_PRODUCTS } from '@/data/products';
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
   const router = useRouter();
   const { addItem } = useCartStore();
   const { toggleFavorite, isFavorite } = useFavoritesStore();
   
-  const product = ALL_PRODUCTS.find(p => p.id === params.id);
+  const product = ALL_PRODUCTS.find(p => p.id === resolvedParams.id);
   const [quantity, setQuantity] = useState(1);
 
   if (!product) {
