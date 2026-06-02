@@ -67,8 +67,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </button>
 
         <div className="product-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', background: '#fff', borderRadius: '24px', padding: '3rem', boxShadow: '0 20px 40px -15px rgba(0,0,0,0.05)' }}>
-          <div className="product-image-container" style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', background: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img src={product.realImage || product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '1/1' }} />
+          <div className="product-image-container" style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', background: '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', minHeight: '400px' }}>
+            <img src={product.realImage || product.image} alt={product.name} style={{ width: '100%', height: '100%', maxHeight: '550px', objectFit: 'contain' }} />
             <button 
               className="heart-btn" 
               onClick={() => toggleFavorite({ id: product.id, name: product.name, price: product.price, image: product.image })}
