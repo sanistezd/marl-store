@@ -111,14 +111,14 @@ function FilterDropdown({
 }
 
 const DUMMY_PRODUCTS = [
-  { id: '1', name: 'ZAVOD Energy Drink Classic', category: 'Напитки', country: 'Россия', brand: 'ZAVOD', price: 150, image: '/energy_drink.png' },
-  { id: '2', name: 'Dr Pepper Cherry', category: 'Напитки', country: 'США', brand: 'Dr Pepper', price: 250, image: '/dr_pepper_cherry.png' },
-  { id: '3', name: 'CHIKALAB Протеиновый батончик', category: 'Снеки', country: 'Россия', brand: 'CHIKALAB', price: 120, image: '/product_russia_kvas.png' },
-  { id: '4', name: 'Острый рамен Samyang', category: 'Снеки', country: 'Южная Корея', brand: 'Samyang', price: 650, image: '/samyang_ramen.png' },
-  { id: '5', name: 'Milka Oreo', category: 'Сладости', country: 'Европа', brand: 'Milka', price: 350, image: '/milka_oreo.png' },
-  { id: '6', name: 'Samyang Buldak Sauce', category: 'Соусы', country: 'Южная Корея', brand: 'Samyang', price: 1200, image: '/samyang_ramen.png' },
-  { id: '7', name: 'EON Almond Premium', category: 'Напитки', country: 'США', brand: 'EON', price: 800, image: '/energy_drink.png' },
-  { id: '8', name: 'ZAVOD Sugar Free', category: 'Напитки', country: 'Россия', brand: 'ZAVOD', price: 150, image: '/dr_pepper_cherry.png' },
+  { id: '1', name: 'ZAVOD Energy Drink Classic', category: 'Напитки', country: 'Россия', brand: 'ZAVOD', price: 150, image: '/energy_drink.png', realImage: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600&auto=format&fit=crop', description: 'Классический энергетик для тех, кому нужно быстро прийти в тонус.', characteristics: ['Классический вкус', 'Бодрящее'] },
+  { id: '2', name: 'Dr Pepper Cherry', category: 'Напитки', country: 'США', brand: 'Dr Pepper', price: 250, image: '/dr_pepper_cherry.png', realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop', description: 'Классический вишневый вкус любимого американского напитка Dr Pepper.', characteristics: ['Сладкое', 'Вишневое', 'Газированное'] },
+  { id: '3', name: 'CHIKALAB Протеиновый батончик', category: 'Снеки', country: 'Россия', brand: 'CHIKALAB', price: 120, image: '/product_russia_kvas.png', realImage: 'https://images.unsplash.com/photo-1620862024760-b9cc6cb226a2?q=80&w=600&auto=format&fit=crop', description: 'Полезный перекус с высоким содержанием белка и невероятным вкусом.', characteristics: ['Сладкое', 'Сытное', 'Много белка'] },
+  { id: '4', name: 'Острый рамен Samyang', category: 'Снеки', country: 'Южная Корея', brand: 'Samyang', price: 650, image: '/samyang_ramen.png', realImage: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=600&auto=format&fit=crop', description: 'Легендарная острая лапша со вкусом курочки. Идеально для любителей острых ощущений.', characteristics: ['Очень острое', 'Сытное', 'Со вкусом курицы'] },
+  { id: '5', name: 'Milka Oreo', category: 'Сладости', country: 'Европа', brand: 'Milka', price: 350, image: '/milka_oreo.png', realImage: 'https://images.unsplash.com/photo-1620862024760-b9cc6cb226a2?q=80&w=600&auto=format&fit=crop', description: 'Нежный альпийский шоколад с хрустящими кусочками оригинального печенья Oreo.', characteristics: ['Сладкое', 'Хрустящее', 'Молочный шоколад'] },
+  { id: '6', name: 'Samyang Buldak Sauce', category: 'Соусы', country: 'Южная Корея', brand: 'Samyang', price: 1200, image: '/samyang_ramen.png', realImage: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=600&auto=format&fit=crop', description: 'Знаменитый острый соус Samyang для любых блюд. Добавь огня!', characteristics: ['Экстремально острое', 'Жидкое'] },
+  { id: '7', name: 'EON Almond Premium', category: 'Напитки', country: 'США', brand: 'EON', price: 800, image: '/energy_drink.png', realImage: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600&auto=format&fit=crop', description: 'Премиальный энергетический напиток с миндальным вкусом.', characteristics: ['Бодрящее', 'Сладкое', 'Миндаль'] },
+  { id: '8', name: 'ZAVOD Sugar Free', category: 'Напитки', country: 'Россия', brand: 'ZAVOD', price: 150, image: '/dr_pepper_cherry.png', realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop', description: 'Энергетик без сахара. Максимум энергии и ноль калорий.', characteristics: ['Без сахара', 'Бодрящее', 'Легкое'] },
 ];
 
 export default function CatalogPage() {
@@ -132,6 +132,7 @@ export default function CatalogPage() {
   const [brands, setBrands] = useState<string[]>([]);
   const [prices, setPrices] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState('По популярности');
+  const [selectedProductInfo, setSelectedProductInfo] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -167,6 +168,21 @@ export default function CatalogPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f2f3f7', color: '#111' }}>
+      {selectedProductInfo && (
+        <div className="cart-overlay open" onClick={() => setSelectedProductInfo(null)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+          <div className="info-modal" onClick={e => e.stopPropagation()}>
+            <button className="close-cart-btn" onClick={() => setSelectedProductInfo(null)} style={{ position: 'absolute', top: '15px', right: '15px', color: '#fff', zIndex: 10 }}>&times;</button>
+            <img src={selectedProductInfo.realImage || selectedProductInfo.image} className="info-modal-img" alt={selectedProductInfo.name} />
+            <h3>{selectedProductInfo.name}</h3>
+            <p style={{ color: '#aaa', marginBottom: '1rem', fontSize: '0.95rem', lineHeight: 1.5 }}>{selectedProductInfo.description}</p>
+            <div style={{ marginBottom: '1.5rem' }}>
+               {selectedProductInfo.characteristics?.map((char: string) => <span key={char} className="char-tag">{char}</span>)}
+            </div>
+            <button className="checkout-btn" onClick={() => { addItem({id: selectedProductInfo.id, name: selectedProductInfo.name, price: selectedProductInfo.price, image: selectedProductInfo.image}); setSelectedProductInfo(null); }}>В корзину за {selectedProductInfo.price} ₽</button>
+          </div>
+        </div>
+      )}
+
       <header className="header" style={{ background: '#0a0a0a' }}>
         <Link href="/" className="logo-area" style={{ textDecoration: 'none', color: '#fff' }}>
           <svg viewBox="0 0 24 24" fill="white" className="logo-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" /></svg>
@@ -248,7 +264,8 @@ export default function CatalogPage() {
                   </div>
                   <div className="prod-title" style={{ fontSize: '1.1rem', marginTop: '1rem' }}>{product.name}</div>
                   <div className="prod-cat" style={{ color: '#888' }}>{product.country} • {product.category}</div>
-                  <div className="prod-footer" style={{ marginTop: '1.5rem' }}>
+                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedProductInfo(product); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>Подробнее &#9432;</button>
+                  <div className="prod-footer" style={{ marginTop: 'auto' }}>
                     <span className="prod-price" style={{ fontSize: '1.3rem' }}>{product.price} &#8381;</span>
                     <button 
                       onClick={() => addItem({

@@ -12,7 +12,10 @@ const ALL_PRODUCTS = [
     countryName: 'Южная Корея',
     categoryName: 'Снеки',
     price: 650,
-    image: '/samyang_ramen.png'
+    image: '/samyang_ramen.png',
+    realImage: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=600&auto=format&fit=crop',
+    description: 'Легендарная острая лапша со вкусом курочки. Идеально для любителей острых ощущений.',
+    characteristics: ['Очень острое', 'Сытное', 'Со вкусом курицы']
   },
   {
     id: '2',
@@ -22,6 +25,9 @@ const ALL_PRODUCTS = [
     categoryName: 'Напитки',
     price: 250,
     image: '/dr_pepper_cherry.png',
+    realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop',
+    description: 'Классический вишневый вкус любимого американского напитка Dr Pepper.',
+    characteristics: ['Сладкое', 'Вишневое', 'Газированное']
   },
   {
     id: '3',
@@ -30,7 +36,10 @@ const ALL_PRODUCTS = [
     countryName: 'Европа',
     categoryName: 'Сладости',
     price: 350,
-    image: '/milka_oreo.png'
+    image: '/milka_oreo.png',
+    realImage: 'https://images.unsplash.com/photo-1620862024760-b9cc6cb226a2?q=80&w=600&auto=format&fit=crop',
+    description: 'Нежный альпийский шоколад с хрустящими кусочками оригинального печенья Oreo.',
+    characteristics: ['Сладкое', 'Хрустящее', 'Молочный шоколад']
   },
   {
     id: '4',
@@ -39,7 +48,10 @@ const ALL_PRODUCTS = [
     countryName: 'Россия',
     categoryName: 'Энергетики',
     price: 150,
-    image: '/energy_drink.png'
+    image: '/energy_drink.png',
+    realImage: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600&auto=format&fit=crop',
+    description: 'Заряжающий энергией напиток отечественного производства. Бодрит и освежает.',
+    characteristics: ['Бодрящее', 'Кисло-сладкое', 'Газированное']
   },
   {
     id: '5',
@@ -49,6 +61,9 @@ const ALL_PRODUCTS = [
     categoryName: 'Напитки',
     price: 150,
     image: '/energy_drink.png',
+    realImage: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600&auto=format&fit=crop',
+    description: 'Классический энергетик для тех, кому нужно быстро прийти в тонус.',
+    characteristics: ['Классический вкус', 'Бодрящее']
   },
   {
     id: '6',
@@ -58,6 +73,9 @@ const ALL_PRODUCTS = [
     categoryName: 'Напитки',
     price: 150,
     image: '/dr_pepper_cherry.png',
+    realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop',
+    description: 'Энергетик без сахара. Максимум энергии и ноль калорий.',
+    characteristics: ['Без сахара', 'Бодрящее', 'Легкое']
   }
 ];
 
@@ -65,6 +83,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCountry, setActiveCountry] = useState<string | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedProductInfo, setSelectedProductInfo] = useState<any>(null);
   
   const cartStore = useCartStore();
   const { toggleFavorite, isFavorite, items: favoriteItems } = useFavoritesStore();
@@ -83,7 +102,11 @@ export default function Home() {
 
   const filteredProducts = ALL_PRODUCTS.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCountry = activeCountry ? p.country === activeCountry : true;
+    const matchesCountry = activeCountry ? (
+      activeCountry === 'ru' ? p.country === 'ru' :
+      activeCountry === 'asia' ? ['kr', 'jp', 'cn'].includes(p.country) :
+      activeCountry === 'west' ? ['us', 'eu'].includes(p.country) : true
+    ) : true;
     return matchesSearch && matchesCountry;
   });
 
@@ -96,6 +119,21 @@ export default function Home() {
 
   return (
     <>
+      {selectedProductInfo && (
+        <div className="cart-overlay open" onClick={() => setSelectedProductInfo(null)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+          <div className="info-modal" onClick={e => e.stopPropagation()}>
+            <button className="close-cart-btn" onClick={() => setSelectedProductInfo(null)} style={{ position: 'absolute', top: '15px', right: '15px', color: '#fff', zIndex: 10 }}>&times;</button>
+            <img src={selectedProductInfo.realImage || selectedProductInfo.image} className="info-modal-img" alt={selectedProductInfo.title} />
+            <h3>{selectedProductInfo.title}</h3>
+            <p style={{ color: '#aaa', marginBottom: '1rem', fontSize: '0.95rem', lineHeight: 1.5 }}>{selectedProductInfo.description}</p>
+            <div style={{ marginBottom: '1.5rem' }}>
+               {selectedProductInfo.characteristics?.map((char: string) => <span key={char} className="char-tag">{char}</span>)}
+            </div>
+            <button className="checkout-btn" onClick={() => { addToCart(selectedProductInfo); setSelectedProductInfo(null); }}>В корзину за {selectedProductInfo.price} ₽</button>
+          </div>
+        </div>
+      )}
+
       <div className={`cart-overlay ${isCartOpen ? 'open' : ''}`} onClick={() => setIsCartOpen(false)}></div>
       <div className={`cart-drawer ${isCartOpen ? 'open' : ''}`}>
         <div className="cart-header">
@@ -220,29 +258,20 @@ export default function Home() {
             <div className="cat-arrow">&rarr;</div>
           </div>
 
-          <div className="category-card" style={activeCountry === 'us' ? { background: '#1c222b', boxShadow: '0 0 0 2px #3b82f6' } : { background: '#1c222b' }} onClick={() => setActiveCountry(activeCountry === 'us' ? null : 'us')}>
-            <img src="/shark_mascot.png" alt="Shark" className="cat-mascot" style={{ filter: 'hue-rotate(90deg)' }} />
-            <div className="cat-info">
-              <h3>США</h3>
-              <p>Американские<br/>товары</p>
-            </div>
-            <div className="cat-arrow">&rarr;</div>
-          </div>
-
-          <div className="category-card" style={activeCountry === 'kr' ? { background: '#251b22', boxShadow: '0 0 0 2px #3b82f6' } : { background: '#251b22' }} onClick={() => setActiveCountry(activeCountry === 'kr' ? null : 'kr')}>
+          <div className="category-card" style={activeCountry === 'asia' ? { background: '#251b22', boxShadow: '0 0 0 2px #3b82f6' } : { background: '#251b22' }} onClick={() => setActiveCountry(activeCountry === 'asia' ? null : 'asia')}>
             <img src="/shark_mascot.png" alt="Shark" className="cat-mascot" style={{ filter: 'hue-rotate(270deg)' }} />
             <div className="cat-info">
-              <h3>Корея</h3>
-              <p>Корейские<br/>товары</p>
+              <h3>Азия</h3>
+              <p>Азиатские<br/>товары</p>
             </div>
             <div className="cat-arrow">&rarr;</div>
           </div>
 
-          <div className="category-card" style={activeCountry === 'eu' ? { background: '#1a1f35', boxShadow: '0 0 0 2px #3b82f6' } : { background: '#1a1f35' }} onClick={() => setActiveCountry(activeCountry === 'eu' ? null : 'eu')}>
-            <img src="/shark_mascot.png" alt="Shark" className="cat-mascot" style={{ filter: 'hue-rotate(180deg)' }} />
+          <div className="category-card" style={activeCountry === 'west' ? { background: '#1c222b', boxShadow: '0 0 0 2px #3b82f6' } : { background: '#1c222b' }} onClick={() => setActiveCountry(activeCountry === 'west' ? null : 'west')}>
+            <img src="/shark_mascot.png" alt="Shark" className="cat-mascot" style={{ filter: 'hue-rotate(90deg)' }} />
             <div className="cat-info">
-              <h3>Европа</h3>
-              <p>Европейские<br/>товары</p>
+              <h3>США и Европа</h3>
+              <p>Западные<br/>товары</p>
             </div>
             <div className="cat-arrow">&rarr;</div>
           </div>
@@ -273,6 +302,7 @@ export default function Home() {
                  </div>
                  <div className="prod-title">{product.title}</div>
                  <div className="prod-cat">{product.countryName}<br/>{product.categoryName}</div>
+                 <button onClick={(e) => { e.stopPropagation(); setSelectedProductInfo(product); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>Подробнее &#9432;</button>
                  <div className="prod-footer">
                    <span className="prod-price">{product.price} &#8381;</span>
                    <button className="btn-cart" onClick={() => addToCart(product)}>В корзину</button>

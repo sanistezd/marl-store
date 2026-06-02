@@ -26,7 +26,7 @@ export default function CartPage() {
   const [mounted, setMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
-  
+
   const { items, updateQuantity, removeItem, getTotalPrice, clearCart } = useCartStore();
 
   const {
@@ -46,7 +46,7 @@ export default function CartPage() {
 
   const onSubmit = async (data: CheckoutFormValues) => {
     if (items.length === 0) return;
-    
+
     setIsSubmitting(true);
     try {
       const result = await processCheckout(data as OrderData, items, getTotalPrice());
@@ -110,7 +110,7 @@ export default function CartPage() {
 
       <div className="inner-container" style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
         <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '2rem' }}>Оформление заказа</h1>
-        
+
         {items.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem 0' }}>
             <ShoppingBag style={{ width: '64px', height: '64px', margin: '0 auto 2rem', color: '#444' }} />
@@ -121,9 +121,9 @@ export default function CartPage() {
             </Link>
           </div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="cart-layout">
+          <form onSubmit={handleSubmit(onSubmit)} className="two-column-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', alignItems: 'start' }}>
             <div className="two-column-main" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              
+
               {/* Cart Items Section */}
               <div style={{ background: '#111', padding: '2rem', borderRadius: '20px', border: '1px solid #222' }}>
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -139,7 +139,7 @@ export default function CartPage() {
                           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444' }}>IMG</div>
                         )}
                       </div>
-                      
+
                       <div style={{ flex: 1 }}>
                         <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.25rem' }}>{item.name}</h3>
                         {item.size && <p style={{ fontSize: '0.9rem', color: '#888' }}>Размер: {item.size}</p>}
@@ -163,8 +163,8 @@ export default function CartPage() {
               {/* Checkout Form Section */}
               <div style={{ background: '#111', padding: '2rem', borderRadius: '20px', border: '1px solid #222' }}>
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Данные доставки</h2>
-                
-                <div className="checkout-grid-2">
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                   <div>
                     <input {...register('name')} type="text" placeholder="Имя и Фамилия" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.name ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
                     {errors.name && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.name.message}</span>}
@@ -180,7 +180,7 @@ export default function CartPage() {
                   {errors.email && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.email.message}</span>}
                 </div>
 
-                <div className="checkout-grid-2">
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
                   <div>
                     <input {...register('city')} type="text" placeholder="Город" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.city ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
                     {errors.city && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.city.message}</span>}
@@ -223,23 +223,23 @@ export default function CartPage() {
                   <span>К оплате</span>
                   <span>{getTotalPrice()} ₽</span>
                 </div>
-                
+
                 <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', fontSize: '0.85rem', color: '#888', lineHeight: '1.4' }}>
                   Оплата производится при получении или переводом на карту после подтверждения заказа менеджером.
                 </div>
 
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
-                  style={{ 
-                    width: '100%', 
-                    padding: '1.2rem', 
-                    background: '#fff', 
-                    color: '#000', 
-                    border: 'none', 
-                    borderRadius: '12px', 
-                    fontSize: '1.1rem', 
-                    fontWeight: 800, 
+                  style={{
+                    width: '100%',
+                    padding: '1.2rem',
+                    background: '#fff',
+                    color: '#000',
+                    border: 'none',
+                    borderRadius: '12px',
+                    fontSize: '1.1rem',
+                    fontWeight: 800,
                     cursor: isSubmitting ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -249,7 +249,7 @@ export default function CartPage() {
                     transition: 'opacity 0.2s'
                   }}
                 >
-                  {isSubmitting ? 'Оформление...' : 'Оформить заказ'} 
+                  {isSubmitting ? 'Оформление...' : 'Оформить заказ'}
                   {!isSubmitting && <ArrowRight size={20} />}
                 </button>
               </div>
