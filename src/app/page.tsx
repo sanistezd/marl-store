@@ -14,8 +14,8 @@ const ALL_PRODUCTS = [
     price: 650,
     image: '/samyang_ramen.png',
     realImage: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=600&auto=format&fit=crop',
-    description: 'Легендарная острая лапша со вкусом курочки. Идеально для любителей острых ощущений.',
-    characteristics: ['Очень острое', 'Сытное', 'Со вкусом курицы']
+    description: 'Один из самых острых и популярных раменов в мире от корейского бренда Samyang. Отличается невероятно жгучим, но при этом насыщенным куриным вкусом со сладковатыми нотками. В комплекте идет фирменный экстра-острый соус и пакетик с кунжутом и водорослями нори. Осторожно: вызывает привыкание и слезы счастья у любителей остренького!',
+    characteristics: ['Очень острое (Buldak)', 'Сытное', 'Со вкусом курицы', 'Премиум качество']
   },
   {
     id: '2',
@@ -26,8 +26,8 @@ const ALL_PRODUCTS = [
     price: 250,
     image: '/dr_pepper_cherry.png',
     realImage: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop',
-    description: 'Классический вишневый вкус любимого американского напитка Dr Pepper.',
-    characteristics: ['Сладкое', 'Вишневое', 'Газированное']
+    description: 'Легендарный американский газированный напиток с насыщенным вишневым вкусом. Это уникальный бленд из 23 вкусов, который был дополнен мягкой вишневой нотой, чтобы создать идеальный освежающий микс. Лучше всего пьется сильно охлажденным со льдом.',
+    characteristics: ['Сладкое', 'Вишневое', 'Сильногазированное', 'Легендарный вкус']
   },
   {
     id: '3',
@@ -38,8 +38,8 @@ const ALL_PRODUCTS = [
     price: 350,
     image: '/milka_oreo.png',
     realImage: 'https://images.unsplash.com/photo-1620862024760-b9cc6cb226a2?q=80&w=600&auto=format&fit=crop',
-    description: 'Нежный альпийский шоколад с хрустящими кусочками оригинального печенья Oreo.',
-    characteristics: ['Сладкое', 'Хрустящее', 'Молочный шоколад']
+    description: 'Нежный альпийский молочный шоколад Milka, тающий во рту, в идеальном сочетании с большими, хрустящими кусочками оригинального американского печенья Oreo и ванильным кремом. Это двойное удовольствие для настоящих сладкоежек.',
+    characteristics: ['Очень сладкое', 'Хрустящее печенье', 'Настоящий молочный шоколад']
   },
   {
     id: '4',
@@ -145,12 +145,18 @@ export default function Home() {
             <div style={{color: '#888', textAlign: 'center', marginTop: '2rem'}}>Корзина пуста</div>
           ) : (
             cartStore.items.map((item) => (
-                <div key={item.id} className="cart-item">
+                <div key={item.id} className="cart-item" style={{ position: 'relative' }}>
                   <img src={item.image} className="cart-item-img" />
                   <div className="cart-item-info">
-                    <div className="cart-item-title">{item.name}</div>
-                    <div className="cart-item-price">{item.price} ₽ &times; {item.quantity} шт = <strong>{item.price * item.quantity} ₽</strong></div>
+                    <div className="cart-item-title" style={{ paddingRight: '20px' }}>{item.name}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.5rem' }}>
+                      <button onClick={() => cartStore.updateQuantity(item.id, item.quantity - 1, item.size)} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
+                      <span style={{ fontSize: '0.95rem', fontWeight: 'bold' }}>{item.quantity}</span>
+                      <button onClick={() => cartStore.updateQuantity(item.id, item.quantity + 1, item.size)} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                      <span style={{ marginLeft: 'auto', fontWeight: 'bold', color: '#fff' }}>{item.price * item.quantity} ₽</span>
+                    </div>
                   </div>
+                  <button onClick={() => cartStore.removeItem(item.id, item.size)} style={{ position: 'absolute', top: '10px', right: '10px', background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>&times;</button>
                 </div>
             ))
           )}
