@@ -121,8 +121,8 @@ export default function CartPage() {
             </Link>
           </div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="two-column-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', alignItems: 'start' }}>
-            <div className="two-column-main" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <form onSubmit={handleSubmit(onSubmit)} className="cart-layout" style={{ gap: '2rem', alignItems: 'start' }}>
+            <div className="cart-main" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
               {/* Cart Items Section */}
               <div style={{ background: '#111', padding: '2rem', borderRadius: '20px', border: '1px solid #222' }}>
@@ -164,7 +164,7 @@ export default function CartPage() {
               <div style={{ background: '#111', padding: '2rem', borderRadius: '20px', border: '1px solid #222' }}>
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Данные доставки</h2>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div className="form-grid" style={{ marginBottom: '1rem' }}>
                   <div>
                     <input {...register('name')} type="text" placeholder="Имя и Фамилия" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.name ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
                     {errors.name && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.name.message}</span>}
@@ -180,7 +180,7 @@ export default function CartPage() {
                   {errors.email && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.email.message}</span>}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div className="form-grid-address" style={{ marginBottom: '1rem' }}>
                   <div>
                     <input {...register('city')} type="text" placeholder="Город" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.city ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
                     {errors.city && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.city.message}</span>}
@@ -257,6 +257,35 @@ export default function CartPage() {
           </form>
         )}
       </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        .cart-layout {
+          display: grid;
+          grid-template-columns: 1fr 350px;
+        }
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+        }
+        .form-grid-address {
+          display: grid;
+          grid-template-columns: 1fr 2fr;
+          gap: 1rem;
+        }
+        
+        @media (max-width: 900px) {
+          .cart-layout {
+            grid-template-columns: 1fr !important;
+          }
+          .form-grid, .form-grid-address {
+            grid-template-columns: 1fr !important;
+          }
+          .inner-container {
+            padding: 1rem !important;
+          }
+        }
+      `}} />
     </div>
   );
 }
