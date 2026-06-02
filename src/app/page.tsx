@@ -289,10 +289,10 @@ export default function Home() {
            {filteredProducts.length > 0 ? filteredProducts.map(product => {
              const favored = isFavorite(product.id);
              return (
-               <div className="product-item" key={product.id}>
+               <div className="product-item" key={product.id} onClick={() => setSelectedProductInfo(product)} style={{ cursor: 'pointer' }}>
                  <button 
                    className="heart-btn" 
-                   onClick={() => toggleFavorite({ id: product.id, name: product.title, price: product.price, image: product.image })}
+                   onClick={(e) => { e.stopPropagation(); toggleFavorite({ id: product.id, name: product.title, price: product.price, image: product.image }) }}
                    style={{ color: favored ? '#ef4444' : '#ccc', transition: 'color 0.2s' }}
                  >
                    {favored ? '❤️' : '♡'}
@@ -305,7 +305,7 @@ export default function Home() {
                  <button onClick={(e) => { e.stopPropagation(); setSelectedProductInfo(product); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>Подробнее &#9432;</button>
                  <div className="prod-footer">
                    <span className="prod-price">{product.price} &#8381;</span>
-                   <button className="btn-cart" onClick={() => addToCart(product)}>В корзину</button>
+                   <button className="btn-cart" onClick={(e) => { e.stopPropagation(); addToCart(product); }}>В корзину</button>
                  </div>
                </div>
              )

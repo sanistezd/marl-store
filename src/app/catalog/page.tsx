@@ -249,10 +249,10 @@ export default function CatalogPage() {
             {sortedProducts.map((product) => {
               const favored = mounted && isFavorite(product.id);
               return (
-                <div className="product-item" key={product.id} style={{ background: '#fff', padding: '1.5rem', border: '1px solid #eee', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 40px -10px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
+                <div className="product-item" key={product.id} onClick={() => setSelectedProductInfo(product)} style={{ cursor: 'pointer', background: '#fff', padding: '1.5rem', border: '1px solid #eee', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 40px -10px rgba(0,0,0,0.1)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
                   <button 
                     className="heart-btn" 
-                    onClick={() => toggleFavorite(product as any)}
+                    onClick={(e) => { e.stopPropagation(); toggleFavorite(product as any); }}
                     style={{ color: favored ? '#ef4444' : '#ccc', transition: 'color 0.2s' }} 
                     onMouseOver={e => !favored && (e.currentTarget.style.color = '#ef4444')} 
                     onMouseOut={e => !favored && (e.currentTarget.style.color = '#ccc')}
@@ -268,12 +268,15 @@ export default function CatalogPage() {
                   <div className="prod-footer" style={{ marginTop: 'auto' }}>
                     <span className="prod-price" style={{ fontSize: '1.3rem' }}>{product.price} &#8381;</span>
                     <button 
-                      onClick={() => addItem({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.image
-                      })}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addItem({
+                          id: product.id,
+                          name: product.name,
+                          price: product.price,
+                          image: product.image
+                        });
+                      }}
                       className="btn-cart" 
                       style={{ padding: '0.6rem 1.2rem', borderRadius: '12px' }}
                     >
