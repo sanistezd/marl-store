@@ -112,6 +112,7 @@ function FilterDropdown({
   );
 }
 
+export default function CatalogPage() {
   const { items, addItem } = useCartStore();
   const { toggleFavorite, isFavorite } = useFavoritesStore();
   const router = useRouter();
