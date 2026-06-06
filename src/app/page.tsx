@@ -205,13 +205,12 @@ export default function Home() {
 
         <div className="products-header">
           <h2>{searchQuery ? `Результаты поиска: ${searchQuery}` : activeCountry ? `Категория: ${activeCountry.toUpperCase()}` : 'Новинки'}</h2>
-          <div className="carousel-nav">
-            <button onClick={() => scrollCarousel('left')}>&lt;</button>
-            <button onClick={() => scrollCarousel('right')}>&gt;</button>
-          </div>
         </div>
 
-        <div className="products-carousel" ref={carouselRef}>
+        <div className="carousel-wrapper">
+          <button className="carousel-nav-btn left" onClick={() => scrollCarousel('left')}>&lt;</button>
+          
+          <div className="products-carousel" ref={carouselRef}>
            {filteredProducts.length > 0 ? filteredProducts.map(product => {
              const favored = isFavorite(product.id);
              return (
@@ -240,6 +239,9 @@ export default function Home() {
               Ничего не найдено.
             </div>
           )}
+          </div>
+          
+          <button className="carousel-nav-btn right" onClick={() => scrollCarousel('right')}>&gt;</button>
         </div>
 
         <div className="brands-grid">
