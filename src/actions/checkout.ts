@@ -6,8 +6,8 @@ export async function processCheckout(orderData: OrderData, cartItems: CartItem[
   // In a real application, you'd save this to a database (e.g. Prisma + PostgreSQL)
   // And send a Telegram message via fetch to Telegram Bot API.
 
-  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8365838281:AAEhkMMdh_Y_TdzP31w6ZDB_NLvc6qMd6PA';
+  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '-5068828394';
 
   const orderText = `
 🛍 *Новый заказ!*
