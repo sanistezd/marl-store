@@ -113,10 +113,13 @@ function FilterDropdown({
 }
 
 export default function CatalogPage() {
-  const { items, addItem } = useCartStore();
+  const cartStore = useCartStore();
   const { toggleFavorite, isFavorite } = useFavoritesStore();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  
+  const cartCount = cartStore.items.reduce((sum, item) => sum + item.quantity, 0);
 
   // Filters State
   const [categories, setCategories] = useState<string[]>([]);
@@ -159,6 +162,46 @@ export default function CatalogPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f2f3f7', color: '#111' }}>
+      <div className={`cart-overlay ${isCartOpen ? 'open' : ''}`} onClick={() => setIsCartOpen(false)}></div>
+      <div className={`cart-drawer ${isCartOpen ? 'open' : ''}`}>
+        <div className="cart-header">
+          <h2>Ваша корзина</h2>
+          <button className="close-cart-btn" onClick={() => setIsCartOpen(false)}>&times;</button>
+        </div>
+        <div className="cart-body">
+          {cartStore.items.length === 0 ? (
+            <div style={{color: '#888', textAlign: 'center', marginTop: '2rem'}}>Корзина пуста</div>
+          ) : (
+            cartStore.items.map((item) => (
+                <div key={item.id} className="cart-item" style={{ position: 'relative' }}>
+                  <img src={item.image} className="cart-item-img" alt={item.name} />
+                  <div className="cart-item-info">
+                    <div className="cart-item-title" style={{ paddingRight: '20px' }}>{item.name}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.5rem' }}>
+                      <button onClick={() => cartStore.updateQuantity(item.id, item.quantity - 1, item.size)} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
+                      <span style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#fff' }}>{item.quantity}</span>
+                      <button onClick={() => cartStore.updateQuantity(item.id, item.quantity + 1, item.size)} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                      <span style={{ marginLeft: 'auto', fontWeight: 'bold', color: '#fff' }}>{item.price * item.quantity} ₽</span>
+                    </div>
+                  </div>
+                  <button onClick={() => cartStore.removeItem(item.id, item.size)} style={{ position: 'absolute', top: '10px', right: '10px', background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>&times;</button>
+                </div>
+            ))
+          )}
+        </div>
+        {cartStore.items.length > 0 && (
+          <div className="cart-footer">
+            <div className="cart-total">
+               <span>Итого:</span>
+               <span>{cartStore.getTotalPrice()} ₽</span>
+            </div>
+            <Link href="/cart" style={{textDecoration: 'none'}}>
+               <button className="checkout-btn" style={{ background: '#3b82f6', color: '#fff', padding: '1rem', borderRadius: '12px', border: 'none', width: '100%', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer', marginTop: '1rem' }}>Оформить заказ</button>
+            </Link>
+          </div>
+        )}
+      </div>
+
       <header className="header" style={{ background: '#0a0a0a' }}>
         <Link href="/" className="logo-area" style={{ textDecoration: 'none', color: '#fff' }}>
           <svg viewBox="0 0 24 24" fill="white" className="logo-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" /></svg>
@@ -184,7 +227,10 @@ export default function CatalogPage() {
         <div className="header-actions">
           <Link href="/register" className="icon-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></Link>
           <Link href="/favorites" className="icon-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></Link>
-          <Link href="/cart" className="icon-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>{mounted && items.length > 0 && <span className="cart-badge">{items.length}</span>}</Link>
+          <button className="icon-btn" onClick={() => setIsCartOpen(true)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            {mounted && cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </button>
         </div>
       </header>
       
@@ -246,12 +292,13 @@ export default function CatalogPage() {
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
-                        addItem({
+                        cartStore.addItem({
                           id: product.id,
                           name: product.name,
                           price: product.price,
                           image: product.image
                         });
+                        setIsCartOpen(true);
                       }}
                       className="btn-cart" 
                       style={{ padding: '0.6rem 1.2rem', borderRadius: '12px' }}
