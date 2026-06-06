@@ -9,6 +9,14 @@ export async function processCheckout(orderData: OrderData, cartItems: CartItem[
   const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8365838281:AAEhkMMdh_Y_TdzP31w6ZDB_NLvc6qMd6PA';
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '-5068828394';
 
+  const deliveryMap: Record<string, string> = {
+    'cdek': 'СДЭК',
+    'pochta': 'Почта РФ',
+    'courier': 'Курьер (в пределах города)',
+    'pickup': 'Самовывоз',
+  };
+  const readableDelivery = deliveryMap[orderData.deliveryMethod] || orderData.deliveryMethod;
+
   const orderText = [
     `🛍 *Новый заказ!*`,
     `👤 *Клиент:* ${orderData.name}`,
@@ -16,7 +24,7 @@ export async function processCheckout(orderData: OrderData, cartItems: CartItem[
     orderData.email ? `📧 *Email:* ${orderData.email}` : null,
     orderData.city ? `📍 *Город:* ${orderData.city}` : null,
     orderData.address ? `🏠 *Адрес:* ${orderData.address}` : null,
-    `🚚 *Доставка:* ${orderData.deliveryMethod}`,
+    `🚚 *Доставка:* ${readableDelivery}`,
     `💬 *Комментарий:* ${orderData.comment || 'Нет'}`,
     ``,
     `📦 *Товары:*`,
