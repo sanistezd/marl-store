@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
@@ -11,6 +11,14 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCountry, setActiveCountry] = useState<string | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = 300;
+      carouselRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+    }
+  };
   
   const cartStore = useCartStore();
   const { toggleFavorite, isFavorite, items: favoriteItems } = useFavoritesStore();
@@ -198,12 +206,12 @@ export default function Home() {
         <div className="products-header">
           <h2>{searchQuery ? `Результаты поиска: ${searchQuery}` : activeCountry ? `Категория: ${activeCountry.toUpperCase()}` : 'Новинки'}</h2>
           <div className="carousel-nav">
-            <button>&lt;</button>
-            <button>&gt;</button>
+            <button onClick={() => scrollCarousel('left')}>&lt;</button>
+            <button onClick={() => scrollCarousel('right')}>&gt;</button>
           </div>
         </div>
 
-        <div className="products-row">
+        <div className="products-carousel" ref={carouselRef}>
            {filteredProducts.length > 0 ? filteredProducts.map(product => {
              const favored = isFavorite(product.id);
              return (

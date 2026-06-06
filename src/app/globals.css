@@ -339,6 +339,28 @@ body {
   margin-bottom: 4rem;
 }
 
+.products-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  margin-bottom: 4rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+
+.products-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.products-carousel .product-item {
+  min-width: 260px;
+  max-width: 260px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
 .product-item {
   background-color: var(--card-bg-light);
   border-radius: 20px;
