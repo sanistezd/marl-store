@@ -9,21 +9,21 @@ export async function processCheckout(orderData: OrderData, cartItems: CartItem[
   const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8365838281:AAEhkMMdh_Y_TdzP31w6ZDB_NLvc6qMd6PA';
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '-5068828394';
 
-  const orderText = `
-🛍 *Новый заказ!*
-👤 *Клиент:* ${orderData.name}
-📱 *Телефон:* ${orderData.phone}
-📧 *Email:* ${orderData.email}
-📍 *Город:* ${orderData.city}
-🏠 *Адрес:* ${orderData.address}
-🚚 *Доставка:* ${orderData.deliveryMethod}
-💬 *Комментарий:* ${orderData.comment || 'Нет'}
-
-📦 *Товары:*
-${cartItems.map((item, i) => `${i + 1}. ${item.name} ${item.size ? `(Размер: ${item.size})` : ''} - ${item.quantity} шт. x ${item.price} ₽`).join('\n')}
-
-💰 *ИТОГО:* ${totalPrice} ₽
-  `;
+  const orderText = [
+    `🛍 *Новый заказ!*`,
+    `👤 *Клиент:* ${orderData.name}`,
+    `📱 *Телефон:* ${orderData.phone}`,
+    orderData.email ? `📧 *Email:* ${orderData.email}` : null,
+    orderData.city ? `📍 *Город:* ${orderData.city}` : null,
+    orderData.address ? `🏠 *Адрес:* ${orderData.address}` : null,
+    `🚚 *Доставка:* ${orderData.deliveryMethod}`,
+    `💬 *Комментарий:* ${orderData.comment || 'Нет'}`,
+    ``,
+    `📦 *Товары:*`,
+    cartItems.map((item, i) => `${i + 1}. ${item.name} ${item.size ? `(Размер: ${item.size})` : ''} - ${item.quantity} шт. x ${item.price} ₽`).join('\n'),
+    ``,
+    `💰 *ИТОГО:* ${totalPrice} ₽`
+  ].filter(Boolean).join('\n');
 
   try {
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
