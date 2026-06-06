@@ -13,9 +13,9 @@ import { OrderData } from '@/types';
 const checkoutSchema = z.object({
   name: z.string().min(2, 'Имя должно содержать минимум 2 символа'),
   phone: z.string().min(10, 'Введите корректный номер телефона'),
-  email: z.string().email('Введите корректный email'),
-  city: z.string().min(2, 'Укажите город'),
-  address: z.string().min(5, 'Укажите полный адрес'),
+  email: z.string().email('Введите корректный email').or(z.literal('')).optional(),
+  city: z.string().optional(),
+  address: z.string().optional(),
   deliveryMethod: z.enum(['cdek', 'pochta', 'courier', 'pickup']),
   comment: z.string().optional(),
 });
@@ -26,6 +26,7 @@ export default function CartPage() {
   const [mounted, setMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderType, setOrderType] = useState<'quick' | 'full'>('quick');
 
   const { items, updateQuantity, removeItem, getTotalPrice, clearCart } = useCartStore();
 
@@ -166,7 +167,12 @@ export default function CartPage() {
 
               {/* Checkout Form Section */}
               <div className="checkout-section">
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Данные доставки</h2>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Данные заказа</h2>
+
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+                  <button type="button" onClick={() => setOrderType('quick')} style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: orderType === 'quick' ? '#fff' : '#1a1a1a', color: orderType === 'quick' ? '#000' : '#fff', fontWeight: 'bold', border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}>Быстрый заказ (1 клик)</button>
+                  <button type="button" onClick={() => setOrderType('full')} style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: orderType === 'full' ? '#fff' : '#1a1a1a', color: orderType === 'full' ? '#000' : '#fff', fontWeight: 'bold', border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}>Полное оформление</button>
+                </div>
 
                 <div className="form-grid" style={{ marginBottom: '1rem' }}>
                   <div>
@@ -179,21 +185,25 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <div style={{ marginBottom: '1rem' }}>
-                  <input {...register('email')} type="email" placeholder="Email" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.email ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
-                  {errors.email && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.email.message}</span>}
-                </div>
+                {orderType === 'full' && (
+                  <>
+                    <div style={{ marginBottom: '1rem' }}>
+                      <input {...register('email')} type="email" placeholder="Email (необязательно)" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.email ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
+                      {errors.email && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.email.message}</span>}
+                    </div>
 
-                <div className="form-grid-address" style={{ marginBottom: '1rem' }}>
-                  <div>
-                    <input {...register('city')} type="text" placeholder="Город" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.city ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
-                    {errors.city && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.city.message}</span>}
-                  </div>
-                  <div>
-                    <input {...register('address')} type="text" placeholder="Полный адрес (улица, дом, кв/офис)" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.address ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
-                    {errors.address && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.address.message}</span>}
-                  </div>
-                </div>
+                    <div className="form-grid-address" style={{ marginBottom: '1rem' }}>
+                      <div>
+                        <input {...register('city')} type="text" placeholder="Город" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.city ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
+                        {errors.city && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.city.message}</span>}
+                      </div>
+                      <div>
+                        <input {...register('address')} type="text" placeholder="Полный адрес (улица, дом, кв/офис)" style={{ width: '100%', padding: '1rem', background: '#1a1a1a', border: errors.address ? '1px solid #ef4444' : '1px solid #333', color: '#fff', borderRadius: '12px', outline: 'none' }} />
+                        {errors.address && <span style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.address.message}</span>}
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', marginBottom: '0.5rem', color: '#888', fontSize: '0.9rem' }}>Способ доставки</label>
