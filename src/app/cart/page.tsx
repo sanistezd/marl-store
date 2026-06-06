@@ -69,13 +69,15 @@ export default function CartPage() {
 
   if (orderSuccess) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center justify-center p-4">
-        <CheckCircle className="w-24 h-24 text-green-500 mb-6" />
-        <h1 className="text-4xl font-bold mb-4 text-center">Заказ успешно оформлен!</h1>
-        <p className="text-gray-400 text-center mb-8 max-w-md">
+      <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center' }}>
+        <div style={{ width: '120px', height: '120px', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
+          <CheckCircle size={64} color="#22c55e" />
+        </div>
+        <h1 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '1.5rem', letterSpacing: '-1px' }}>Заказ успешно оформлен!</h1>
+        <p style={{ color: '#888', fontSize: '1.2rem', lineHeight: 1.6, maxWidth: '600px', marginBottom: '3rem' }}>
           Мы получили вашу заявку. В ближайшее время наш менеджер свяжется с вами для подтверждения заказа и уточнения деталей оплаты.
         </p>
-        <Link href="/catalog" className="bg-white text-black px-8 py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors">
+        <Link href="/catalog" style={{ textDecoration: 'none', background: '#fff', color: '#000', padding: '1.2rem 3rem', borderRadius: '100px', fontSize: '1.2rem', fontWeight: 700, transition: 'all 0.2s', boxShadow: '0 10px 30px rgba(255,255,255,0.1)' }}>
           Вернуться в каталог
         </Link>
       </div>
