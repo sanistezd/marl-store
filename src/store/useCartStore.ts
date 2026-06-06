@@ -42,10 +42,14 @@ export const useCartStore = create<CartState>()(
       },
 
       updateQuantity: (id, quantity, size) => {
+        if (quantity <= 0) {
+          get().removeItem(id, size);
+          return;
+        }
         set((state) => ({
           items: state.items.map((item) =>
             item.id === id && item.size === size
-              ? { ...item, quantity: Math.max(1, quantity) }
+              ? { ...item, quantity }
               : item
           ),
         }));
