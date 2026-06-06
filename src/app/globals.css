@@ -711,6 +711,10 @@ body {
   .products-header { margin-top: 3rem; margin-bottom: 2rem; }
   .hero-main-image { height: 250px; max-width: 100%; }
   .prod-img-wrapper { height: 140px; }
+  
+  .carousel-wrapper { gap: 0.25rem; }
+  .carousel-nav-btn { width: 32px; height: 32px; font-size: 1rem; }
+  .products-carousel .product-item { min-width: 220px; max-width: 220px; }
 }
 
 @media (max-width: 480px) {
